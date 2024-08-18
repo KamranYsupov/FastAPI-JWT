@@ -1,9 +1,9 @@
 from asyncio import current_task
+from typing import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker,
-    async_scoped_session,
     AsyncSession
 )
 
@@ -23,9 +23,12 @@ class DataBaseManager:
             expire_on_commit=False,
         )
 
-    async def get_async_session(self):
+    async def get_async_session(self) -> AsyncGenerator[AsyncSession, None]:
         async with self.AsyncSessionLocal() as session:
             yield session
+
+    async def dispose(self):
+        await self.engine.dispose()
 
 
 db_manager = DataBaseManager(db_url=settings.db_url)
