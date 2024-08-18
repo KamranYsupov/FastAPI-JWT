@@ -1,0 +1,54 @@
+from pydantic import Field
+from pydantic_settings import BaseSettings
+
+
+class Settings(BaseSettings):
+    """Настройки проекта"""
+
+    project_name: str = Field(title='Название проекта')
+    api_v1_prefix: str = Field(title='Префикс первой версии API', default='/api/v1')
+
+    # region Настройки JWT
+    secret_key: str = Field(title='Секретный ключ')
+    algorithm: str = Field(title='JWT Алгоритм', default='HS256')
+    access_expire_minutes: int = Field(
+        title='Срок жизни access токена в минутах',
+        default=20
+    )
+    refresh_expire_days: int = Field(
+        title='Срок жизни refresh токена в днях',
+        default=30
+    )
+    # endregion
+
+    # region Настройки БД
+    db_user: str = Field(title='Пользователь БД')
+    db_password: str = Field(title='Пароль БД')
+    db_host: str = Field(title='Хост БД')
+    db_port: int = Field(title='Порт ДБ', default='5432')
+    db_name: str = Field(title='Название БД')
+
+    sqlite_default_url: str = Field(
+        default='sqlite+aiosqlite:///./db.sqlite3'
+    )
+
+    # endregion
+
+    container_wiring_modules: list = Field(
+        title='Модули контейнера',
+        default=[
+            'app.api.v1.endpoints.user',
+            'app.api.v1.endpoints.auth',
+            'app.api.v1.deps',
+        ]
+    )
+
+    @property
+    def db_url(self) -> str:
+        return self.sqlite_default_url
+
+    class Config:
+        env_file = '.env'
+
+
+settings = Settings()
