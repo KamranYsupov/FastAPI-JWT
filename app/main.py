@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.responses import ORJSONResponse
 
 from app.core.config import settings
 from app.core.container import Container, container
@@ -20,6 +21,7 @@ async def lifespan(fastapi_app: FastAPI):
 def create_app() -> FastAPI:
     fastapi_app = FastAPI(
         title=settings.project_name,
+        default_response_class=ORJSONResponse,
         lifespan=lifespan,
     )
 
