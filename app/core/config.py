@@ -27,6 +27,14 @@ class Settings(BaseSettings):
     db_host: str = Field(title='Хост БД')
     db_port: int = Field(title='Порт ДБ', default='5432')
     db_name: str = Field(title='Название БД')
+    metadata_naming_convention: dict[str, str] = Field(
+        default={
+            'ix': 'ix_%(column_0_label)s',
+            'uq': 'uq_%(table_name)s_%(column_0_name)s',
+            'ck': 'ck_%(table_name)s_%(constraint_name)s',
+            'fk': 'fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s',
+            'pk': 'pk_%(table_name)s'
+        })
 
     sqlite_default_url: str = Field(
         default='sqlite+aiosqlite:///./db.sqlite3'

@@ -1,12 +1,18 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import func
+from sqlalchemy import func, MetaData
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr
+
+from app.core.config import settings
 
 
 class Base(DeclarativeBase):
     __abstract__ = True
+
+    metadata = MetaData(
+        naming_convention=settings.metadata_naming_convention
+    )
 
     @declared_attr.directive
     def __tablename__(cls) -> str:
