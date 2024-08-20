@@ -25,6 +25,16 @@ class Base(DeclarativeBase):
     )
 
 
+class AbstractUser(Base):
+    """Абстрактная модель пользователя"""
+
+    __abstract__ = True
+
+    username: Mapped[str] = mapped_column(unique=True, index=True)
+    email: Mapped[str] = mapped_column(unique=True, index=True)
+    password: Mapped[bytes]
+
+
 class TimestampedMixin:
     """Миксин для даты создания и даты обновления"""
 

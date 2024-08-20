@@ -1,10 +1,17 @@
-from sqlalchemy.orm import Mapped, mapped_column
+from typing import TYPE_CHECKING
 
-from .base import Base, TimestampedMixin
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from .base_mixins import AbstractUser, TimestampedMixin
 
 
-class User(Base, TimestampedMixin):
+if TYPE_CHECKING:
+    from .seller import Seller
+
+
+class User(AbstractUser, TimestampedMixin):
     """Модель пользователя"""
-    username: Mapped[str] = mapped_column(unique=True, index=True)
-    email: Mapped[str] = mapped_column(unique=True, index=True)
-    password: Mapped[bytes]
+
+    bill: Mapped[float] = mapped_column(default=0)
+
+    seller: Mapped['Seller'] = relationship(back_populates='user')
