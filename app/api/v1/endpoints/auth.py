@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, Header, HTTPException
 from starlette import status
 
 from app.services.jwt import JWTService, TokenEnum
-from ..deps import validate_auth_user, get_current_user_refresh
+from ..deps import validate_auth_user, get_current_user_refresh, get_current_user_access
 from app.core.container import Container
 from app.db import User
 from app.schemas.auth import TokenInfoSchema
@@ -32,6 +32,15 @@ async def auth_user(
     )
 
     return token_info
+
+
+@router.post('/logout', status_code=status.HTTP_200_OK)
+@inject
+async def logout_user(
+        user: User = Depends(get_current_user_access),
+        jwt_service: JWTService = Depends(Provide[Container.jwt_service])
+) -> None:
+    await jwt_service.logout(sub=user.id)
 
 
 @router.post(

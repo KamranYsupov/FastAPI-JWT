@@ -24,8 +24,8 @@ class RepositoryBase(Generic[ModelType,]):
         db_obj = self._model(**obj_in_data)
 
         self._session.add(db_obj)
-        await self._session.flush()
         await self._session.commit()
+        await self._session.refresh(db_obj)
 
         return db_obj
 
@@ -63,3 +63,9 @@ class RepositoryBase(Generic[ModelType,]):
     async def delete(self, **kwargs) -> None:
         statement = delete(self._model).filter_by(**kwargs)
         await self._session.execute(statement)
+
+    async def exists(self, *args, **kwargs) -> ModelType | None:
+        statement = select(self._model).filter(*args).filter_by(**kwargs)
+        result = await self._session.execute(statement)
+        return result.scalars().one_or_none()
+

@@ -51,17 +51,32 @@ class AuthUserFromToken:
         self.token_type = token_type
 
     async def __call__(self, payload: dict = Depends(get_current_jwt_payload)) -> User:
-        self.validate_token(payload, expected_token_type=self.token_type)
+        await self.validate_token(payload, expected_token_type=self.token_type)
         user = await get_current_payload_user(payload)
         return user
 
     @staticmethod
-    def validate_token(payload: dict, expected_token_type: TokenEnum) -> bool:
+    @inject
+    async def validate_token(
+            payload: dict,
+            expected_token_type: TokenEnum,
+            jwt_service: JWTService = Depends(Provide[Container.jwt_service])
+    ) -> bool:
         current_token_type = payload.get('type')
         if current_token_type != expected_token_type.value:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail=f'expected {expected_token_type.value!r} token but got {current_token_type!r}'
+                detail=f'Expected {expected_token_type.value!r} token but got {current_token_type!r}'
+            )
+
+        if expected_token_type != TokenEnum.REFRESH:
+            return True
+
+        existing_token = await jwt_service.exists(sub=uuid.UUID(payload.get('sub')))
+        if not existing_token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail='The token is outdated or does not exist'
             )
 
         return True

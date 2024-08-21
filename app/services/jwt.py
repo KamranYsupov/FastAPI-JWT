@@ -10,6 +10,7 @@ from app.core.config import settings
 from app.db import User, RefreshToken
 from app.schemas.user import UserSchema
 from app.repositories.refresh import RepositoryRefreshToken
+from app.db import RefreshToken
 
 
 class TokenEnum(enum.Enum):
@@ -61,7 +62,7 @@ class JWTService:
 
         return token
 
-    async def decode(self, token: str):
+    async def decode(self, token: str) -> dict:
         try:
             payload = jwt.decode(
                 jwt=token,
@@ -77,3 +78,12 @@ class JWTService:
             )
 
         return payload
+
+    async def exists(self, sub: RefreshToken.sub | User.id) -> RefreshToken | None:
+        return await self._repository_refresh_token.exists(
+            sub=sub
+        )
+
+    async def logout(self, sub: RefreshToken.sub | User.id):
+        await self._repository_refresh_token.delete(sub=sub)
+

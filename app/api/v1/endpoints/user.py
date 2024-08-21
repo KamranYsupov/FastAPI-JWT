@@ -20,7 +20,7 @@ async def register_user(
         create_user_schema: CreateUserSchema,
         user_service: UserService = Depends(Provide[Container.user_service]),
 ) -> UserSchema:
-    user = await user_service.create_user(user_schema=create_user_schema)
+    user = await user_service.create_user(create_user_schema)
     user_schema = UserSchema(
         id=user.id,
         username=user.username,
