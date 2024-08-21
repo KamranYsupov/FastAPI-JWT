@@ -8,7 +8,7 @@ from .base_mixins import Base, TimestampedMixin
 
 
 if TYPE_CHECKING:
-    from .user import User
+    from .seller import Seller
 
 
 class Product(Base, TimestampedMixin):
@@ -18,6 +18,8 @@ class Product(Base, TimestampedMixin):
     description: Mapped[str]
     price: Mapped[float]
     rating: Mapped[float] = mapped_column(default=0)
-    seller_id: Mapped[UUID] = mapped_column(ForeignKey('sellers.id'))
+    seller_id: Mapped[UUID] = mapped_column(
+        ForeignKey('sellers.id', ondelete='CASCADE')
+    )
 
-    seller: Mapped['User'] = relationship('seller_id', back_populates='products')
+    seller: Mapped['Seller'] = relationship(back_populates='products')

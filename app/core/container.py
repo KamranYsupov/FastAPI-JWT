@@ -1,8 +1,9 @@
 from dependency_injector import containers, providers
 
 from app.repositories.user import RepositoryUser
+from app.repositories.refresh import RepositoryRefreshToken
 from app.core.config import settings
-from app.db import DataBaseManager, User
+from app.db import DataBaseManager, User, RefreshToken
 from app.services.user import UserService
 from app.services.jwt import JWTService
 
@@ -15,13 +16,18 @@ class Container(containers.DeclarativeContainer):
     repository_user = providers.Singleton(
         RepositoryUser, model=User, session=session
     )
+    repository_refresh_token = providers.Singleton(
+        RepositoryRefreshToken, model=RefreshToken, session=session
+    )
     # endregion
 
     # region services
     user_service = providers.Singleton(
         UserService, repository_user=repository_user
     )
-    jwt_service = providers.Singleton(JWTService)
+    jwt_service = providers.Singleton(
+        JWTService, repository_refresh_token=repository_refresh_token
+    )
     # endregion
 
 

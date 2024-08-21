@@ -18,8 +18,11 @@ class Seller(Base, TimestampedMixin):
     name: Mapped[str] = mapped_column(String(32), unique=True)
     bio: Mapped[str | None]
     is_verified: Mapped[bool] = mapped_column(default=False)
-    user_id: Mapped[UUID] = mapped_column(ForeignKey('users.id'), unique=True)
+    user_id: Mapped[UUID] = mapped_column(
+        ForeignKey('users.id', ondelete='CASCADE'),
+        unique=True,
+    )
 
-    user: Mapped['User'] = relationship('user_id', back_populates='user')
+    user: Mapped['User'] = relationship(back_populates='seller')
     products: Mapped[list['Product']] = relationship(back_populates='seller')
 

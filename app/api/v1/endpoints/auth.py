@@ -23,8 +23,8 @@ async def auth_user(
         user: User = Depends(validate_auth_user),
         jwt_service: JWTService = Depends(Provide[Container.jwt_service])
 ) -> TokenInfoSchema:
-    access_token = jwt_service.encode(user=user, token_type=TokenEnum.ACCESS)
-    refresh_token = jwt_service.encode(user=user, token_type=TokenEnum.REFRESH)
+    access_token = await jwt_service.encode(user=user, token_type=TokenEnum.ACCESS)
+    refresh_token = await jwt_service.encode(user=user, token_type=TokenEnum.REFRESH)
 
     token_info = TokenInfoSchema(
         access_token=access_token,
@@ -45,7 +45,7 @@ async def refresh_access_token(
         user: User = Depends(get_current_user_refresh),
         jwt_service: JWTService = Depends(Provide[Container.jwt_service])
 ) -> TokenInfoSchema:
-    access_token = jwt_service.encode(user=user, token_type=TokenEnum.ACCESS)
+    access_token = await jwt_service.encode(user=user, token_type=TokenEnum.ACCESS)
 
     token_info = TokenInfoSchema(
         access_token=access_token,

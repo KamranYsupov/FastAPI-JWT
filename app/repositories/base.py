@@ -60,6 +60,6 @@ class RepositoryBase(Generic[ModelType,]):
 
         return await self._session.get(self._model, obj_id)
 
-    async def delete(self, obj_id: UUID) -> None:
-        statement = delete(self._model).where(self._model.id == obj_id)
+    async def delete(self, **kwargs) -> None:
+        statement = delete(self._model).filter_by(**kwargs)
         await self._session.execute(statement)

@@ -24,16 +24,7 @@ async def get_current_jwt_payload(
         jwt_service: JWTService = Depends(Provide[Container.jwt_service])
 ) -> dict:
     token = credentials.credentials
-    try:
-        payload = jwt_service.decode(token=token)
-
-    except InvalidTokenError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='invalid token'
-        )
-
-    return payload
+    return await jwt_service.decode(token=token)
 
 
 @inject
