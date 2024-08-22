@@ -1,4 +1,4 @@
-from pydantic import Field
+﻿from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -47,6 +47,8 @@ class Settings(BaseSettings):
         default=[
             'app.api.v1.endpoints.user',
             'app.api.v1.endpoints.auth',
+            'app.api.v1.endpoints.seller',
+            'app.api.v1.endpoints.product',
             'app.api.v1.deps',
         ]
     )

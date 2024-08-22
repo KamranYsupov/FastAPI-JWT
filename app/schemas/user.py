@@ -2,10 +2,10 @@ import uuid
 
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
 
+from app.schemas.mixins import UserSchemaMixin
 
-class UserSchemaMixin(BaseModel):
-    username: str = Field(title='Имя пользователя', max_length=50, min_length=8)
-    email: EmailStr = Field(title='E-mail')
+
+
 
 
 class UserSchema(UserSchemaMixin):

@@ -1,4 +1,4 @@
-from uuid import UUID
+﻿from uuid import UUID
 from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey
@@ -19,7 +19,7 @@ class Product(Base, TimestampedMixin):
     price: Mapped[float]
     rating: Mapped[float] = mapped_column(default=0)
     seller_id: Mapped[UUID] = mapped_column(
-        ForeignKey('sellers.id', ondelete='CASCADE')
+        ForeignKey('sellers.id', ondelete='CASCADE'),
     )
 
     seller: Mapped['Seller'] = relationship(back_populates='products')

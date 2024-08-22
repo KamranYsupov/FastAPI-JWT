@@ -1,4 +1,4 @@
-import uuid
+﻿import uuid
 
 import jwt
 from jwt.exceptions import InvalidTokenError
@@ -9,10 +9,13 @@ from starlette import status
 
 from app.core.config import settings
 from app.core.container import Container
-from app.db import User
+from app.db import User, Seller
 from app.schemas.auth import AuthUserSchema
 from app.services.jwt import JWTService, TokenEnum
-from app.services.user import UserService
+from app.services import (
+     UserService,
+     SellerService,
+)
 from app.utils.hashers import check_password
 
 http_bearer = HTTPBearer()
@@ -84,6 +87,23 @@ class AuthUserFromToken:
 
 get_current_user_access = AuthUserFromToken(token_type=TokenEnum.ACCESS)
 get_current_user_refresh = AuthUserFromToken(token_type=TokenEnum.REFRESH)
+
+
+@inject
+async def get_current_seller(
+        user: User = Depends(get_current_user_access),
+        seller_service: SellerService = Depends(
+              Provide[Container.seller_service]
+         ),
+) -> Seller:
+     seller = await seller_service.get(user_id=user.id)
+      
+     if not seller:
+         raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Current user is not seller'
+         )
+     return seller
 
 
 @inject

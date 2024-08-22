@@ -1,36 +1,40 @@
 from uuid import UUID
 
-from fastapi import HTTPException
-from starlette import status
-
 from app.repositories.user import RepositoryUser
 from app.schemas.user import CreateUserSchema
 from app.db import User
 
 
 class UserService:
-    def __init__(self, repository_user: RepositoryUser):
+    def __init__(
+        self,
+        repository_user: RepositoryUser,
+        unique_fields: list[str] | tuple[str] | None = None,
+    ):
         self._repository_user = repository_user
+        self.unique_fields = unique_fields
 
-    async def get(self, **kwargs) -> User:
-        return await self._repository_user.get(**kwargs)
+    async def get(
+        self, 
+        join_seller: bool = False,
+        **kwargs,
+     ) -> User:
+        return await self._repository_user.get(
+            join_seller=join_seller, 
+            **kwargs
+        )
 
     async def create_user(self, user_schema: CreateUserSchema) -> User:
-        existing_user = await self._repository_user.exists(
-            username=user_schema.username, email=user_schema.email
+        return await self._repository_user.create_user(
+            obj_in=user_schema.model_dump(),
+            unique_fields=self.unique_fields
         )
-        if existing_user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail='Username or email address is already taken'
-            )
-
-        return await self._repository_user.create_user(user_schema.model_dump())
 
     async def update(self, *, user_id: UUID, obj_in) -> User:
         return await self._repository_user.update(
             obj_id=user_id,
-            obj_in=obj_in
+            obj_in=obj_in,
+            unique_fields=self.unique_fields,
         )
 
     async def list(self, *args, **kwargs) -> list[User]:
