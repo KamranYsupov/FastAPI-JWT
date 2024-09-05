@@ -1,5 +1,7 @@
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+
+from pydantic import Field
 
 from .mixins import SellerSchemaMixin
 
@@ -16,4 +18,4 @@ class SellerProductsSchema(SellerSchemaMixin):
     
                        
 class CreateSellerSchema(SellerSchemaMixin):
-    user_id: uuid.UUID | None 
+    user_id: Optional[uuid.UUID] = Field(default=None)

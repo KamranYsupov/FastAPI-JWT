@@ -1,47 +1,41 @@
-from uuid import UUID
+from typing import List, Tuple
 
-from app.repositories.user import RepositoryUser
-from app.schemas.user import CreateUserSchema
+
 from app.db import User
+from app.utils.hashers import hash_password
+from .mixins import CRUDServiceMixin
+from app.repositories.user import RepositoryUser
 
 
-class UserService:
+
+class UserService(CRUDServiceMixin):
     def __init__(
         self,
         repository_user: RepositoryUser,
-        unique_fields: list[str] | tuple[str] | None = None,
+        unique_fields: List[str] | Tuple[str] | None = None,
     ):
         self._repository_user = repository_user
-        self.unique_fields = unique_fields
-
+        super().__init__(
+            repository=repository_user,
+            unique_fields=unique_fields,
+        )
+        
     async def get(
         self, 
         join_seller: bool = False,
         **kwargs,
-     ) -> User:
+    ) -> User | None:
         return await self._repository_user.get(
-            join_seller=join_seller, 
-            **kwargs
+            join_seller=join_seller,
+            **kwargs,
         )
+        
+    async def create_user(self, obj_in): 
+        obj_in_data = dict(obj_in)
+        hashed_password = hash_password(obj_in_data['password'])
+        obj_in_data['password'] = hashed_password
 
-    async def create_user(self, user_schema: CreateUserSchema) -> User:
-        return await self._repository_user.create_user(
-            obj_in=user_schema.model_dump(),
-            unique_fields=self.unique_fields
+        return await super().create(
+            obj_in=obj_in_data,
         )
-
-    async def update(self, *, user_id: UUID, obj_in) -> User:
-        return await self._repository_user.update(
-            obj_id=user_id,
-            obj_in=obj_in,
-            unique_fields=self.unique_fields,
-        )
-
-    async def list(self, *args, **kwargs) -> list[User]:
-        return await self._repository_user.list(*args, **kwargs)
-
-    async def delete(self, obj_id: UUID) -> None:
-        return await self._repository_user.delete(obj_id=obj_id)
-
-    async def exists(self, *args, **kwargs) -> User | None:
-        return await self._repository_user.exists(*args, **kwargs)
+        

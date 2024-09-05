@@ -9,7 +9,6 @@ from app.core.container import Container
 from app.db import User
 from app.schemas.user import CreateUserSchema, UserSchema
 from app.services.user import UserService
-from app.utils.orm import validate_object_insertion
 from ..deps import get_current_user_access
 
 router = APIRouter(tags=['User'], prefix='/users')
@@ -21,10 +20,7 @@ async def register_user(
         create_user_schema: CreateUserSchema,
         user_service: UserService = Depends(Provide[Container.user_service]),
 ) -> UserSchema:
-    user = await validate_object_insertion(
-        user_service.create_user,
-        insert_schema=create_user_schema,
-    )
+    user = await user_service.create_user(obj_in=create_user_schema)
     user_schema = UserSchema(
         id=user.id,
         username=user.username,

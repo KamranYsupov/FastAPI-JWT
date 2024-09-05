@@ -10,7 +10,6 @@ from app.db import User, Seller
 from app.schemas.product import CreateProductSchema, ProductSchema
 from app.schemas.seller import SellerSchema
 from app.services import ProductService, SellerService
-from app.utils.orm import validate_object_insertion
 from ..deps import get_current_user_access, get_current_seller
 
 router = APIRouter(tags=['Product'], prefix='/products')
@@ -26,13 +25,9 @@ async def create_product(
     create_product_schema: CreateProductSchema,
     seller: Seller = Depends(get_current_seller),
     product_service: ProductService = Depends(Provide[Container.product_service]),
-    seller_service: SellerService = Depends(Provide[Container.seller_service]),
 ) -> ProductSchema:
     create_product_schema.seller_id = seller.id
-    product = await validate_object_insertion(
-        product_service.create,
-        insert_schema=create_product_schema,
-    )
+    product = await product_service.create(obj_in=create_product_schema)
     seller_schema = SellerSchema(
         id=seller.id,
         name=seller.name,

@@ -1,5 +1,5 @@
 ﻿import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from pydantic import BaseModel, Field
 
@@ -15,7 +15,7 @@ class ProductSchema(ProductSchemaMixin):
     
     
 class CreateProductSchema(ProductSchemaMixin):
-    seller_id: uuid.UUID | None = Field(title='ID продавца')
+    seller_id: Optional[uuid.UUID] = Field(title='ID продавца', default=None)
   
     
 
