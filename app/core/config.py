@@ -7,6 +7,8 @@ class Settings(BaseSettings):
 
     project_name: str = Field(title='Название проекта')
     api_v1_prefix: str = Field(title='Префикс первой версии API', default='/api/v1')
+    graphql_prefix: str = Field(title='GraphQL prefix', default='/graphql')
+    
 
     # region Настройки JWT
     secret_key: str = Field(title='Секретный ключ')
@@ -49,6 +51,9 @@ class Settings(BaseSettings):
             'app.api.v1.endpoints.auth',
             'app.api.v1.endpoints.seller',
             'app.api.v1.endpoints.product',
+            'app.api.v1.graphql.context',
+            'app.api.v1.graphql.queries.product',
+            'app.api.v1.graphql.queries.seller',
             'app.api.v1.deps',
         ]
     )

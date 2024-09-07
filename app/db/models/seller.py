@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+﻿from typing import TYPE_CHECKING
 from uuid import UUID
 
 from sqlalchemy import String, ForeignKey
@@ -24,5 +24,8 @@ class Seller(Base, TimestampedMixin):
     )
 
     user: Mapped['User'] = relationship(back_populates='seller')
-    products: Mapped[list['Product']] = relationship(back_populates='seller')
+    products: Mapped[list['Product']] = relationship(
+        back_populates='seller', 
+        lazy='selectin',
+    )
 

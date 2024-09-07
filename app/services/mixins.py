@@ -1,4 +1,4 @@
-from uuid import UUID
+﻿from uuid import UUID
 from typing import (
     List, 
     Tuple,
@@ -41,8 +41,8 @@ class CRUDServiceMixin:
             insert_data=insert_data,
         )
 
-    async def list(self, *args, **kwargs) -> list[ModelType]:
-        return await self._repository.list(*args, **kwargs)
+    async def list(self, *args, limit: int, **kwargs) -> list[ModelType]:
+        return await self._repository.list(*args, limit=limit, **kwargs)
 
     async def delete(self, obj_id: UUID) -> None:
         return await self._repository.delete(obj_id=obj_id)
@@ -74,5 +74,7 @@ class CRUDServiceMixin:
             )
             
         return insert_data
+
+    
         
         

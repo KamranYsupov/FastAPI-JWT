@@ -1,4 +1,4 @@
-from uuid import UUID
+﻿from uuid import UUID
 from typing import (
     Generic,
     Optional,
@@ -60,8 +60,13 @@ class RepositoryBase(Generic[ModelType,]):
         return await self._session.get(self.model, obj_id)
 
 
-    async def list(self, *args, **kwargs):
-        statement = select(self.model).filter(*args).filter_by(**kwargs)
+    async def list(self, *args, limit: int, **kwargs):
+        statement = (
+            select(self.model)
+            .filter(*args)
+            .filter_by(**kwargs)
+            .limit(limit)
+        )
         result = await self._session.execute(statement)
         return result.scalars().all()
 

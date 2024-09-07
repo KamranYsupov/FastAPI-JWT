@@ -1,0 +1,61 @@
+from typing import Annotated, Optional, List
+from uuid import UUID
+
+import strawberry
+from fastapi import Depends
+from strawberry.fastapi import BaseContext, GraphQLRouter
+from dependency_injector.wiring import Provide, inject
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.utils.extensions import DependencyExtension
+from app.utils.orm import get_orm_statement_by_selected_fields
+
+from app.core.container import Container
+from app.services import ProductService
+from app.db import Product
+from ..types.product import ProductType
+
+
+@strawberry.type(extend=True)
+class ProductQuery:
+
+    @strawberry.field(extensions=[DependencyExtension()])
+    @inject
+    async def get_products(
+        self,
+        info: strawberry.Info,
+        skip: Optional[int] = None,
+        limit: Optional[int] = None,
+        session: AsyncSession = Provide[Container.session],
+        product_service: ProductService = Provide[Container.product_service],
+    ) -> List[ProductType]:
+        statement = get_orm_statement_by_selected_fields(
+            model=Product,
+            info=info
+        ).offset(skip).limit(limit) 
+        result = await session.execute(statement)
+
+        products_data = [product.serialize() for product in result.scalars().all()]
+
+        
+        return [ProductType.from_data(product_dict) for product_dict in products_data]
+    
+    @strawberry.field(extensions=[DependencyExtension()])
+    @inject
+    async def get_product(
+        self,
+        info: strawberry.Info,
+        product_id: str,
+        session: AsyncSession = Provide[Container.session],
+        product_service: ProductService = Provide[Container.product_service],
+    ) -> ProductType:
+        statement = get_orm_statement_by_selected_fields(
+            model=Product, 
+            info=info
+        ).filter_by(id=UUID(product_id))
+        print(statement)
+        result = await session.execute(statement)
+
+        product = result.scalars().first()
+
+        return ProductType.from_data(product.serialize())

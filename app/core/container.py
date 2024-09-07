@@ -65,4 +65,5 @@ class Container(containers.DeclarativeContainer):
 
 
 container = Container()
+container.init_resources()
 container.wire(modules=settings.container_wiring_modules)

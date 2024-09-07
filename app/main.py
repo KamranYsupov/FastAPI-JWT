@@ -1,14 +1,15 @@
+from typing import Optional
 from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
+from strawberry.asgi import GraphQL
 
 from app.core.config import settings
 from app.core.container import Container, container
 from app.api.v1 import routers
 from app.db import Base, db_manager
-
 
 @asynccontextmanager
 async def lifespan(fastapi_app: FastAPI):
@@ -27,6 +28,9 @@ def create_app() -> FastAPI:
 
     fastapi_app.container = container
     fastapi_app.include_router(routers.api_router, prefix=settings.api_v1_prefix)
+
+
+
     return fastapi_app
 
 

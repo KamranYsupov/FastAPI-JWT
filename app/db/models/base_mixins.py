@@ -1,10 +1,13 @@
-import uuid
+﻿import uuid
+import copy
+from typing import Dict, List, Tuple
 from datetime import datetime
 
 from sqlalchemy import func, MetaData
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr
 
 from app.core.config import settings
+from app.schemas.product import ProductSchema
 
 
 class Base(DeclarativeBase):
@@ -23,6 +26,29 @@ class Base(DeclarativeBase):
         default=uuid.uuid4,
         index=True,
     )
+
+    def serialize(
+        self, 
+        exclude_fields: List[str | None] | Tuple[str | None] = []
+    ) -> Dict:
+        serialized_data = {}
+        schema_fields = ProductSchema.model_fields.keys()
+        data = copy.deepcopy(self.__dict__)
+        
+        for field in schema_fields:
+            serialized_data[field] = data.get(field) # Добавляем не указаным полям значение None
+        
+        if not exclude_fields:
+            return serialized_data
+       
+        for field in exclude_fields: 
+            serialized_data.pop(field)
+
+        return serialized_data
+        
+       
+        
+        
 
 
 class AbstractUser(Base):

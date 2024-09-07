@@ -22,4 +22,7 @@ class Product(Base, TimestampedMixin):
         ForeignKey('sellers.id', ondelete='CASCADE'),
     )
 
-    seller: Mapped['Seller'] = relationship(back_populates='products')
+    seller: Mapped['Seller'] = relationship(
+        back_populates='products',
+        lazy='joined',
+    )

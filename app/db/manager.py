@@ -1,4 +1,4 @@
-from asyncio import current_task
+﻿from asyncio import current_task
 from typing import AsyncGenerator
 
 from sqlalchemy.ext.asyncio import (
@@ -20,7 +20,7 @@ class DataBaseManager:
             class_=AsyncSession,
             autoflush=False,
             autocommit=False,
-            expire_on_commit=False,
+            expire_on_commit=True,
         )
 
     async def get_async_session(self) -> AsyncGenerator[AsyncSession, None]:
