@@ -16,12 +16,6 @@ class ProductType:
     rating: float
     seller: SellerType 
 
-   # db_obj: strawberry.Private[Product]
-
-   # @strawberry.field
-   # def seller(self) -> SellerType:
-   #     return SellerType.from_db_obj(self.db_obj.seller)
-
     @classmethod
     def from_data(cls, data: dict):
         return cls(**data)

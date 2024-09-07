@@ -12,6 +12,7 @@ from app.utils.orm import get_orm_statement_by_selected_fields
 
 from app.core.container import Container
 from app.services import ProductService
+from app.schemas.product import ProductSchema
 from app.db import Product
 from ..types.product import ProductType
 
@@ -35,9 +36,11 @@ class ProductQuery:
         ).offset(skip).limit(limit) 
         result = await session.execute(statement)
 
-        products_data = [product.serialize() for product in result.scalars().all()]
+        products_data = [
+            product.serialize(schema_class=ProductSchema)
+            for product in result.scalars().all()
+        ]
 
-        
         return [ProductType.from_data(product_dict) for product_dict in products_data]
     
     @strawberry.field(extensions=[DependencyExtension()])
@@ -57,5 +60,6 @@ class ProductQuery:
         result = await session.execute(statement)
 
         product = result.scalars().first()
+        product_data = product.serialize(schema_class=ProductSchema)
 
-        return ProductType.from_data(product.serialize())
+        return ProductType.from_data(product_data)

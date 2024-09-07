@@ -7,7 +7,6 @@ from sqlalchemy import func, MetaData
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, declared_attr
 
 from app.core.config import settings
-from app.schemas.product import ProductSchema
 
 
 class Base(DeclarativeBase):
@@ -29,10 +28,11 @@ class Base(DeclarativeBase):
 
     def serialize(
         self, 
-        exclude_fields: List[str | None] | Tuple[str | None] = []
+        schema_class,
+        exclude_fields: List[str | None] | Tuple[str | None] = [],
     ) -> Dict:
         serialized_data = {}
-        schema_fields = ProductSchema.model_fields.keys()
+        schema_fields = schema_class.model_fields.keys()
         data = copy.deepcopy(self.__dict__)
         
         for field in schema_fields:
