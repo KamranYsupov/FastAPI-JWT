@@ -4,13 +4,11 @@ import strawberry
 
 from app.db import Seller
 from app.schemas.seller import SellerSchema
+from .base import BaseSellerType, BaseProductType
 
 
 @strawberry.type(name='Seller')
-class SellerType:
-    id: str
-    name: str
-    bio: str
-    is_verified: bool
-    
+class SellerType(BaseSellerType):
+    products: List[BaseProductType]
+
   

@@ -13,7 +13,7 @@ class SellerSchema(SellerSchemaMixin):
     id: uuid.UUID
                    
 
-class SellerProductsSchema(SellerSchemaMixin):
+class SellerProductsSchema(SellerSchema):
     products: list['ProductSchema'] 
     
                        

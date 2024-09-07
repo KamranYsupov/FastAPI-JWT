@@ -56,7 +56,6 @@ class ProductQuery:
             model=Product, 
             info=info
         ).filter_by(id=UUID(product_id))
-        print(statement)
         result = await session.execute(statement)
 
         product = result.scalars().first()

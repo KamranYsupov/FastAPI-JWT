@@ -95,6 +95,7 @@ def get_orm_statement_by_selected_fields(
         *fields,
         *flatten([get_relation_options(i) for i in options['relations']])
     ]
+    
 
     return select(model).options(*query_options)
 
