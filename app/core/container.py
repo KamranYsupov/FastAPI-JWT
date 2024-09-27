@@ -5,12 +5,15 @@ from app.repositories import (
     RepositoryRefreshToken,
     RepositoryProduct, 
     RepositorySeller,
+    RepositoryOrder,
+    RepositoryOrderItem,
 )
 from app.services import (
     UserService,
     JWTService,
     ProductService,
     SellerService,
+    OrderService,
 )
 from app.db import (
     DataBaseManager,
@@ -18,6 +21,8 @@ from app.db import (
     RefreshToken,
     Product,
     Seller,
+    Order,
+    OrderItem,
 )
 from app.core.config import settings
 
@@ -41,6 +46,12 @@ class Container(containers.DeclarativeContainer):
     repository_refresh_token = providers.Singleton(
         RepositoryRefreshToken, model=RefreshToken, session=session
     )
+    repository_order = providers.Singleton(
+        RepositoryOrder, model=Order, session=session
+    )
+    repository_order_item = providers.Singleton(
+        RepositoryOrderItem, model=OrderItem, session=session
+    )
     # endregion
 
     # region services
@@ -52,6 +63,12 @@ class Container(containers.DeclarativeContainer):
     product_service = providers.Singleton(
         ProductService,
         repository_product=repository_product,
+    )
+    order_service = providers.Singleton(
+        OrderService,
+        repository_product=repository_product,
+        repository_order=repository_order,
+        repository_order_item=repository_order_item,
     )
     seller_service = providers.Singleton(
         SellerService, 

@@ -18,6 +18,7 @@ class Product(Base, TimestampedMixin):
     description: Mapped[str]
     price: Mapped[float]
     rating: Mapped[float] = mapped_column(default=0)
+    quantity: Mapped[int] = mapped_column(default=0)
     seller_id: Mapped[UUID] = mapped_column(
         ForeignKey('sellers.id', ondelete='CASCADE'),
     )
@@ -25,4 +26,9 @@ class Product(Base, TimestampedMixin):
     seller: Mapped['Seller'] = relationship(
         back_populates='products',
         lazy='joined',
+    )
+    
+    items: Mapped[list['OrderItem']] = relationship(
+        back_populates='product',
+        lazy='selectin',
     )

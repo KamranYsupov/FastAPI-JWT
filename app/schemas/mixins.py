@@ -15,7 +15,8 @@ class SellerSchemaMixin(BaseModel):
 class ProductSchemaMixin(BaseModel):
     name: str = Field(title='Название продукта')
     description: str = Field(title='Описание')
-    price: float = Field(title='Цена', default=0)
+    price: float = Field(title='Цена', gt=0.0)
     rating: float = Field(title='Оценка', le=5.0, gt=1.0)
+    quantity: int = Field(ge=0)
     
     

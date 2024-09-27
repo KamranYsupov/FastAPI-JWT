@@ -40,6 +40,7 @@ async def create_product(
         description=product.description,
         price=product.price,
         rating=product.rating,
+        quantity=product.quantity,
         seller=seller_schema
     )
     return product_schema

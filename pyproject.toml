@@ -18,6 +18,7 @@ alembic = "^1.13.2"
 strawberry-graphql = {extras = ["fastapi"], version = "^0.239.2"}
 
 
+
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.2"
 requests = "^2.32.3"

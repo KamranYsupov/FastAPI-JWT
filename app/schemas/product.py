@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class ProductSchema(ProductSchemaMixin):
-    seller: 'SellerSchema' = Field(title='Продавец')
+    seller: Optional['SellerSchema'] = Field(title='Продавец', default=None)
     id: uuid.UUID
     
     

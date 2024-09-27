@@ -51,6 +51,7 @@ class Settings(BaseSettings):
             'app.api.v1.endpoints.auth',
             'app.api.v1.endpoints.seller',
             'app.api.v1.endpoints.product',
+            'app.api.v1.endpoints.order',
             'app.api.v1.graphql.context',
             'app.api.v1.graphql.queries.product',
             'app.api.v1.graphql.queries.seller',

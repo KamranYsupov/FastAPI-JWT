@@ -18,6 +18,7 @@ class BaseProductType(BaseType):
     description: str
     price: float
     rating: float
+    quantity: int
 
 
 @strawberry.type(extend=True)

@@ -62,3 +62,27 @@ class ProductQuery:
         product_data = product.serialize(schema_class=ProductSchema)
 
         return ProductType.from_data(product_data)
+    
+    @strawberry.field(extensions=[DependencyExtension()])
+    @inject
+    async def get_products_by_ids(
+        self,
+        info: strawberry.Info,
+        ids: List[str],
+        session: AsyncSession = Provide[Container.session],
+        product_service: ProductService = Provide[Container.product_service],
+    ) -> List[ProductType]:
+        uuids = [UUID(product_id) for product_id in ids]
+        statement = get_orm_statement_by_selected_fields(
+            model=Product,
+            info=info
+        ).filter(Product.id.in_(uuids))
+        result = await session.execute(statement)
+
+        products_data = [
+            product.serialize(schema_class=ProductSchema)
+            for product in result.scalars().all()
+        ]
+
+        return [ProductType.from_data(product_dict) for product_dict in products_data]
+    

@@ -5,7 +5,9 @@ __all__ = (
     'RefreshToken',
     'User',
     'Product',
-    'Seller'
+    'Seller',
+    'Order',
+    'OrderItem',
 )
 
 from .manager import DataBaseManager, db_manager
@@ -14,3 +16,5 @@ from .models.refresh import RefreshToken
 from .models.product import Product
 from .models.user import User
 from .models.seller import Seller
+from .models.order import Order, OrderItem
+

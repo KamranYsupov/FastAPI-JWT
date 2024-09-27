@@ -5,6 +5,8 @@ from .endpoints.user import router as user_router
 from .endpoints.auth import router as auth_router
 from .endpoints.seller import router as seller_router
 from .endpoints.product import router as product_router
+from .endpoints.order import router as order_router
+
 from .graphql import router as graphql_router
 
 
@@ -15,6 +17,7 @@ api_router.include_router(user_router)
 api_router.include_router(auth_router)
 api_router.include_router(seller_router)
 api_router.include_router(product_router)
+api_router.include_router(order_router)
 
 # GraphQL
 api_router.include_router(

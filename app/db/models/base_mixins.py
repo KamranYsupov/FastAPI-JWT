@@ -29,6 +29,7 @@ class Base(DeclarativeBase):
     def serialize(
         self, 
         schema_class,
+        model_dump: bool = False,
         exclude_fields: List[str | None] | Tuple[str | None] = [],
     ) -> Dict:
         serialized_data = {}
@@ -44,7 +45,10 @@ class Base(DeclarativeBase):
         for field in exclude_fields: 
             serialized_data.pop(field)
 
-        return serialized_data
+        if model_dump:
+            return serialized_data
+  
+        return schema_class(**serialized_data)
         
        
         
