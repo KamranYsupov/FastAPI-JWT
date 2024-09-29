@@ -22,7 +22,7 @@ class RepositoryProduct(RepositoryBase[Product]):
             session=session,
         )
         
-    async def get_products_by_ids(self, ids: List[UUID]) -> List[int]:
+    async def get_products_by_ids(self, ids: List[UUID]) -> List[Product]:
         statement = select(Product).filter(Product.id.in_(ids))
         result = await self._session.execute(statement)
         return result.scalars().all()
